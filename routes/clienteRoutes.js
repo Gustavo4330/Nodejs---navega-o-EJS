@@ -44,4 +44,40 @@ router.post("/", (req, res) => {
   res.redirect("/clientes");
 });
 
+router.get("/:id/editar", (req, res) => {
+  const cliente = clientes.find((item) => item.id === Number(req.params.id));
+
+  if (!cliente) {
+    return res.redirect("/clientes");
+  }
+
+  res.render("clientes/form-edicao", { cliente });
+});
+
+router.post("/:id/editar", (req, res) => {
+  const { nome, email, telefone, cidade } = req.body;
+  const id = Number(req.params.id);
+  const clienteIndex = clientes.findIndex((item) => item.id === id);
+
+  if (clienteIndex === -1) {
+    return res.redirect("/clientes");
+  }
+
+  clientes[clienteIndex] = {
+    ...clientes[clienteIndex],
+    nome,
+    email,
+    telefone,
+    cidade
+  };
+
+  res.redirect("/clientes");
+});
+
+router.post("/:id/excluir", (req, res) => {
+  const id = Number(req.params.id);
+  clientes = clientes.filter((item) => item.id !== id);
+  res.redirect("/clientes");
+});
+
 module.exports = router;

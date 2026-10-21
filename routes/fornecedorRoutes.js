@@ -47,4 +47,41 @@ router.post("/", (req, res) => {
   res.redirect("/fornecedores");
 });
 
+router.get("/:id/editar", (req, res) => {
+  const fornecedor = fornecedores.find((item) => item.id === Number(req.params.id));
+
+  if (!fornecedor) {
+    return res.redirect("/fornecedores");
+  }
+
+  res.render("fornecedores/form-edicao", { fornecedor });
+});
+
+router.post("/:id/editar", (req, res) => {
+  const { razaoSocial, cnpj, email, telefone, cidade } = req.body;
+  const id = Number(req.params.id);
+  const fornecedorIndex = fornecedores.findIndex((item) => item.id === id);
+
+  if (fornecedorIndex === -1) {
+    return res.redirect("/fornecedores");
+  }
+
+  fornecedores[fornecedorIndex] = {
+    ...fornecedores[fornecedorIndex],
+    razaoSocial,
+    cnpj,
+    email,
+    telefone,
+    cidade
+  };
+
+  res.redirect("/fornecedores");
+});
+
+router.post("/:id/excluir", (req, res) => {
+  const id = Number(req.params.id);
+  fornecedores = fornecedores.filter((item) => item.id !== id);
+  res.redirect("/fornecedores");
+});
+
 module.exports = router;
